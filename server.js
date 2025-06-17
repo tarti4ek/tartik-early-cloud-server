@@ -1,42 +1,24 @@
 const express = require('express');
 const admin = require('firebase-admin');
-const fs = require('fs');
+const axios = require('axios');
 
-// Загружаем наш сервисный аккаунт
-const serviceAccount = require('./service-account.json');
+const app = express();
+const PORT = process.env.PORT || 10000;
 
-// Инициализируем firebase-admin
+// Получаем из Render переменную
+const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("✅ Tartik Early Cloud Server работает");
+app.get('/', (req, res) => {
+  res.send('Tartik Early Cloud Server работает!');
 });
 
-app.get("/test", async (req, res) => {
-  const registrationToken = 'ТВОЙ_РЕАЛЬНЫЙ_FCM_ТОКЕН';  // сюда вставь свой токен
-
-  const message = {
-    notification: {
-      title: "🚨 Тест сирены",
-      body: "Это тестовое уведомление от Tartik Early Cloud Server"
-    },
-    token: registrationToken
-  };
-
-  try {
-    const response = await admin.messaging().send(message);
-    console.log("Уведомление успешно отправлено:", response);
-    res.send("✅ Уведомление успешно отправлено");
-  } catch (error) {
-    console.error("Ошибка при отправке:", error);
-    res.send("❌ Ошибка при отправке");
-  }
-});
+// Тут позже подключим основную логику
 
 app.listen(PORT, () => {
   console.log(`🚀 Tartik Early Cloud Server запущен на порту ${PORT}`);
