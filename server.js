@@ -41,7 +41,7 @@ async function sendPushNotification(title, body) {
     await messaging.send(message);
     console.log('✅ Отправлено уведомление:', title, '-', body);
   } catch (error) {
-    console.error('Ошибка при отправке уведомления:', error);
+    console.error('❌ Ошибка при отправке уведомления:', error);
   }
 }
 
@@ -74,7 +74,7 @@ async function checkForAlerts() {
       await sendPushNotification(title, body);
     }
   } catch (err) {
-    console.error('Ошибка при проверке тревог:', err.message);
+    console.error('❌ Ошибка при проверке тревог:', err.message);
   }
 }
 
