@@ -32,7 +32,7 @@ async function sendPushNotification(title, body) {
       notification: {
         sound: 'default',
         visibility: "public",
-        channelId: 'sirens_channel'
+        channelId: 'sirens_channel',
       },
     },
   };
