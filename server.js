@@ -3,13 +3,12 @@ const express = require('express');
 const admin = require('firebase-admin');
 const axios = require('axios');
 const cron = require('node-cron');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Инициализация Firebase Admin SDK
-const serviceAccount = require('./service-account.json');
+// 🔐 Загрузка service-account из переменной среды
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -17,9 +16,9 @@ admin.initializeApp({
 
 const messaging = admin.messaging();
 
-let lastAlertId = null; // для предотвращения повторных уведомлений
+let lastAlertId = null;
 
-// Функция отправки push-уведомления
+// Отправка push-уведомления
 async function sendPushNotification(title, body) {
   const message = {
     notification: {
@@ -45,7 +44,7 @@ async function sendPushNotification(title, body) {
   }
 }
 
-// Парсинг и проверка тревог с источника
+// Получение данных от Пикуд Ореф
 async function checkForAlerts() {
   try {
     const response = await axios.get('https://www.oref.org.il/WarningMessages/alert/alerts.json', {
@@ -77,10 +76,10 @@ async function checkForAlerts() {
   }
 }
 
-// Проверка тревог каждые 30 секунд
+// Запуск проверки тревог каждые 30 секунд
 cron.schedule('*/30 * * * * *', checkForAlerts);
 
-// Hello route
+// Тестовая страница
 app.get('/', (req, res) => {
   res.send('🚀 Tartik Early Cloud Server запущен');
 });
