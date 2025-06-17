@@ -28,10 +28,10 @@ async function sendPushNotification(title, body) {
     },
     topic: 'sirens',
     android: {
-      priority: "high",
+      priority: 'high',
       notification: {
         sound: 'default',
-        visibility: "public",
+        visibility: 'public',
         channelId: 'sirens_channel',
       },
     },
@@ -50,8 +50,8 @@ async function checkForAlerts() {
   try {
     const response = await axios.get('https://www.oref.org.il/WarningMessages/alert/alerts.json', {
       headers: {
-        "Referer": "https://www.oref.org.il/",
-        "User-Agent": "Mozilla/5.0",
+        Referer: 'https://www.oref.org.il/',
+        'User-Agent': 'Mozilla/5.0',
       },
       params: {
         time: Date.now(),
@@ -64,12 +64,11 @@ async function checkForAlerts() {
       lastAlertId = data.id;
       const cities = data.data.join(', ');
 
-      // определяем тип тревоги
-      const isEarly = data.desc?.includes("מוקדמת") || false;
+      const isEarly = data.desc?.includes('מוקדמת') || false;
       const title = isEarly ? 'Раннее предупреждение' : 'Воздушная тревога';
       const body = isEarly
-        ? В ближайшие минуты в городах: ${cities} ожидается сирена!
-        : Воздушная тревога в городах: ${cities};
+        ? `В ближайшие минуты в городах: ${cities} ожидается сирена!`
+        : `Воздушная тревога в городах: ${cities}`;
 
       await sendPushNotification(title, body);
     }
@@ -78,10 +77,10 @@ async function checkForAlerts() {
   }
 }
 
-// Проверка тревог каждую 30-ю секунду
+// Проверка тревог каждые 30 секунд
 cron.schedule('*/30 * * * * *', checkForAlerts);
 
-// Простой hello route
+// Hello route
 app.get('/', (req, res) => {
   res.send('🚀 Tartik Early Cloud Server запущен');
 });
